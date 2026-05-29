@@ -59,7 +59,7 @@ export default function HowItWorks() {
   const steps = t('how.steps')
 
   return (
-    <section id="how" className="bg-cream py-20 sm:py-28">
+    <section id="how" className="bg-paper py-20 sm:py-28">
       <div className="section">
         <Reveal className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>

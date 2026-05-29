@@ -8,7 +8,7 @@ export default function Carriers() {
   const t = useT()
 
   return (
-    <section id="carriers" className="bg-cream-light py-20 sm:py-28">
+    <section id="carriers" className="bg-white py-20 sm:py-28">
       <div className="section">
         <Reveal className="text-center">
           <p className="eyebrow eyebrow-dot justify-center">{t('carriers.eyebrow')}</p>

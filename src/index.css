@@ -8,7 +8,7 @@
     -webkit-font-smoothing: antialiased;
   }
   body {
-    @apply bg-cream text-ink font-sans;
+    @apply bg-white text-ink font-sans;
   }
   ::selection {
     @apply bg-penny-500 text-white;
@@ -43,12 +43,22 @@
     @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
   }
 
+  /* Signature card: crisp 1px ink border, square-ish radius, hard offset shadow.
+     Far less "generic SaaS" than soft drop shadows. */
   .card {
-    @apply rounded-4xl bg-white shadow-soft;
+    @apply rounded-3xl border border-ink/10 bg-white transition-all duration-200;
+  }
+  .card-hover {
+    @apply hover:-translate-x-0.5 hover:-translate-y-0.5 hover:border-ink hover:shadow-hard-pink;
   }
 
   .display {
-    @apply font-sans font-extrabold tracking-tight leading-[0.98];
+    @apply font-sans font-extrabold tracking-tight leading-[0.95];
+  }
+
+  /* Small uppercase chip */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-white px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-ink-soft;
   }
 }
 
@@ -63,5 +73,20 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Subtle dotted grid texture — adds depth without color. */
+  .bg-grid {
+    background-image: radial-gradient(rgba(17, 17, 17, 0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .bg-grid-pink {
+    background-image: radial-gradient(rgba(243, 30, 122, 0.16) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  /* Fade a layer out toward the bottom. */
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
   }
 }

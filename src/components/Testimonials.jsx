@@ -6,7 +6,7 @@ export default function Testimonials() {
   const items = t('testimonials.items')
 
   return (
-    <section id="reviews" className="bg-penny-100 py-20 sm:py-28">
+    <section id="reviews" className="bg-penny-50 py-20 sm:py-28">
       <div className="section">
         <Reveal>
           <p className="eyebrow eyebrow-dot">{t('testimonials.eyebrow')}</p>

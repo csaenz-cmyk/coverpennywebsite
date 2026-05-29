@@ -28,7 +28,7 @@ export default function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-        scrolled ? 'border-b border-ink/5 bg-cream/85 backdrop-blur-md' : ''
+        scrolled ? 'border-b border-ink/10 bg-white/85 backdrop-blur-md' : ''
       }`}
     >
       <nav className="section flex h-16 items-center justify-between gap-4">
@@ -78,7 +78,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden border-b border-ink/5 bg-cream/95 backdrop-blur-md md:hidden"
+            className="overflow-hidden border-b border-ink/10 bg-white/95 backdrop-blur-md md:hidden"
           >
             <div className="section flex flex-col gap-1 py-4">
               {links.map((l) => (

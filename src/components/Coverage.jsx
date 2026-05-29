@@ -29,7 +29,7 @@ function Card({ typeKey, index }) {
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.55, delay: index * 0.08 }}
       whileHover={{ y: -6 }}
-      className="card group flex flex-col p-6 text-left transition-shadow hover:shadow-card sm:p-8"
+      className="card card-hover group flex flex-col p-6 text-left sm:p-8"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-penny-100 text-3xl">
@@ -76,7 +76,7 @@ export default function Coverage() {
   const t = useT()
 
   return (
-    <section id="coverage" className="bg-penny-100 py-20 sm:py-28">
+    <section id="coverage" className="bg-grid bg-white py-20 sm:py-28">
       <div className="section">
         <Reveal>
           <p className="eyebrow eyebrow-dot">{t('coverage.eyebrow')}</p>

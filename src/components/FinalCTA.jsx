@@ -7,7 +7,7 @@ export default function FinalCTA() {
   const { openQuote } = useQuote()
 
   return (
-    <section className="bg-cream py-20 sm:py-28">
+    <section className="bg-paper py-20 sm:py-28">
       <div className="section">
         <Reveal>
           <div className="relative overflow-hidden rounded-4xl bg-penny-500 px-6 py-16 text-center text-white sm:px-12 sm:py-20">
