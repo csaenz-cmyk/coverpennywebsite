@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-cream text-ink font-sans;
+  }
+  ::selection {
+    @apply bg-penny-500 text-white;
+  }
+}
+
+@layer components {
+  /* Monospace eyebrow label, e.g. "● COVERAGE" */
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.18em] text-penny-500 inline-flex items-center gap-2;
+  }
+  .eyebrow-dot::before {
+    content: '';
+    @apply inline-block h-1.5 w-1.5 rounded-full bg-penny-500;
+  }
+
+  /* Pill buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-penny-500 focus-visible:ring-offset-2;
+  }
+  .btn-primary {
+    @apply btn bg-penny-500 text-white px-7 py-3.5 shadow-card hover:bg-penny-600 hover:-translate-y-0.5 active:translate-y-0;
+  }
+  .btn-ghost {
+    @apply btn border border-ink/15 bg-white/70 px-6 py-3 text-ink hover:border-ink/40 hover:bg-white;
+  }
+  .btn-dark {
+    @apply btn bg-ink text-white px-7 py-3.5 hover:bg-ink-soft hover:-translate-y-0.5;
+  }
+
+  .section {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+
+  .card {
+    @apply rounded-4xl bg-white shadow-soft;
+  }
+
+  .display {
+    @apply font-sans font-extrabold tracking-tight leading-[0.98];
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  /* hide scrollbar for marquee track */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
