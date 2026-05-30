@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useT } from '../i18n/LanguageContext.jsx'
 import { useQuote } from './quote/QuoteContext.jsx'
 import Reveal from './Reveal.jsx'
+import Tilt from './Tilt.jsx'
 
 const ORDER = ['auto', 'home', 'business', 'moto']
 
@@ -21,54 +22,60 @@ function Card({ typeKey, index }) {
   const c = t(`coverage.types.${typeKey}`)
 
   return (
-    <motion.button
-      type="button"
-      onClick={() => openQuote(typeKey)}
+    <motion.div
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.55, delay: index * 0.08 }}
-      whileHover={{ y: -6 }}
-      className="card card-hover group flex flex-col p-6 text-left sm:p-8"
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-penny-100 text-3xl">
-          {c.emoji}
-        </div>
-        <div className="text-right">
-          <div className="font-mono text-[10px] uppercase tracking-widest text-ink-muted">{t('coverage.from')}</div>
-          <div className="font-sans text-2xl font-extrabold text-ink">
-            ${c.price}
-            <span className="text-sm font-medium text-ink-muted">{t('coverage.perMo')}</span>
-          </div>
-        </div>
-      </div>
-
-      <h3 className="mt-5 text-2xl font-extrabold text-ink">{c.name}</h3>
-      <p className="mt-1 text-ink-muted">{c.desc}</p>
-
-      <ul className="mt-5 space-y-2.5">
-        {c.bullets.map((b) => (
-          <li key={b} className="flex items-start gap-2.5 text-sm text-ink-soft">
-            <CheckDot />
-            {b}
-          </li>
-        ))}
-      </ul>
-
-      <span className="mt-6 inline-flex items-center gap-2 font-semibold text-penny-500">
-        {t('coverage.start')} {c.name.toLowerCase()} {t('coverage.quote')}
-        <svg
-          viewBox="0 0 24 24"
-          className="h-4 w-4 transition-transform group-hover:translate-x-1"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
+      <Tilt max={7} className="h-full">
+        <button
+          type="button"
+          onClick={() => openQuote(typeKey)}
+          className="card card-hover group flex h-full w-full flex-col p-6 text-left sm:p-8"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
-        </svg>
-      </span>
-    </motion.button>
+          <div className="flex items-start justify-between gap-4" style={{ transform: 'translateZ(35px)' }}>
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-penny-100 text-3xl">
+              {c.emoji}
+            </div>
+            <div className="text-right">
+              <div className="font-mono text-[10px] uppercase tracking-widest text-ink-muted">{t('coverage.from')}</div>
+              <div className="font-sans text-2xl font-extrabold text-ink">
+                ${c.price}
+                <span className="text-sm font-medium text-ink-muted">{t('coverage.perMo')}</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 className="mt-5 text-2xl font-extrabold text-ink" style={{ transform: 'translateZ(25px)' }}>
+            {c.name}
+          </h3>
+          <p className="mt-1 text-ink-muted">{c.desc}</p>
+
+          <ul className="mt-5 space-y-2.5">
+            {c.bullets.map((b) => (
+              <li key={b} className="flex items-start gap-2.5 text-sm text-ink-soft">
+                <CheckDot />
+                {b}
+              </li>
+            ))}
+          </ul>
+
+          <span className="mt-6 inline-flex items-center gap-2 font-semibold text-penny-500">
+            {t('coverage.start')} {c.name.toLowerCase()} {t('coverage.quote')}
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4 transition-transform group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
+        </button>
+      </Tilt>
+    </motion.div>
   )
 }
 
