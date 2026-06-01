@@ -63,7 +63,7 @@
   }
 
   .display {
-    @apply font-display font-extrabold tracking-[-0.02em] leading-[0.92];
+    @apply font-display font-extrabold tracking-[-0.01em] leading-[0.95];
   }
 
   /* Dotted leader between a label and a value (receipt / price-list motif). */
@@ -103,6 +103,31 @@
     background-image: radial-gradient(rgba(243, 30, 122, 0.16) 1px, transparent 1px);
     background-size: 22px 22px;
   }
+  /* Chunky 3D extruded type — ink letters on a stacked pink slab. */
+  .text-3d {
+    color: #111111;
+    text-shadow:
+      1px 1px 0 #f31e7a,
+      2px 2px 0 #f31e7a,
+      3px 3px 0 #f31e7a,
+      4px 4px 0 #f31e7a,
+      5px 5px 0 #e21370,
+      6px 6px 0 #d80f66,
+      8px 10px 16px rgba(17, 17, 17, 0.18);
+  }
+  /* Inverse: pink letters on an ink slab (for accents). */
+  .text-3d-ink {
+    color: #f31e7a;
+    text-shadow:
+      1px 1px 0 #111111,
+      2px 2px 0 #111111,
+      3px 3px 0 #111111,
+      4px 4px 0 #111111,
+      5px 5px 0 #111111,
+      6px 6px 0 #111111,
+      8px 10px 16px rgba(17, 17, 17, 0.22);
+  }
+
   /* Fade a layer out toward the bottom. */
   .mask-fade-b {
     -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
