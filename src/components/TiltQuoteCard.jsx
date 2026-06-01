@@ -1,5 +1,12 @@
 import { useRef } from 'react'
-import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from 'framer-motion'
 import CarrierMark from './CarrierMark.jsx'
 
 const ROWS = [
@@ -10,6 +17,7 @@ const ROWS = [
 
 // Interactive 3D tilt card that follows the cursor, with layered depth + glare.
 export default function TiltQuoteCard() {
+  const reduce = useReducedMotion()
   const ref = useRef(null)
   const mx = useMotionValue(0) // -0.5 .. 0.5
   const my = useMotionValue(0)
@@ -38,9 +46,9 @@ export default function TiltQuoteCard() {
       <div className="animate-float-slow">
         <motion.div
           ref={ref}
-          onMouseMove={onMove}
-          onMouseLeave={reset}
-          style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+          onMouseMove={reduce ? undefined : onMove}
+          onMouseLeave={reduce ? undefined : reset}
+          style={reduce ? undefined : { rotateX, rotateY, transformStyle: 'preserve-3d' }}
           className="relative"
         >
           {/* Card body */}

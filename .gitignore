@@ -11,3 +11,6 @@ yarn-error.log*
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# Installed agent skills (dev tooling, not part of the site)
+.agents/

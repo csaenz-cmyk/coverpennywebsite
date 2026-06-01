@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Strong custom easings (Emil Kowalski). Built-in CSS easings lack punch. */
+    --ease-out-quart: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  }
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -25,9 +30,9 @@
     @apply inline-block h-1.5 w-1.5 rounded-full bg-penny-500;
   }
 
-  /* Pill buttons */
+  /* Pill buttons — press feedback + strong ease (Emil). */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-penny-500 focus-visible:ring-offset-2;
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-penny-500 focus-visible:ring-offset-2;
   }
   .btn-primary {
     @apply btn bg-penny-500 text-white px-7 py-3.5 shadow-card hover:bg-penny-600 hover:-translate-y-0.5 active:translate-y-0;
@@ -46,10 +51,15 @@
   /* Signature card: crisp 1px ink border, square-ish radius, hard offset shadow.
      Far less "generic SaaS" than soft drop shadows. */
   .card {
-    @apply rounded-3xl border border-ink/10 bg-white transition-all duration-200;
+    @apply rounded-3xl border border-ink/10 bg-white transition-[transform,border-color,box-shadow] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)];
   }
-  .card-hover {
-    @apply hover:-translate-x-0.5 hover:-translate-y-0.5 hover:border-ink hover:shadow-hard-pink;
+  /* Hover lift only on devices with a real pointer (avoids sticky tap states). */
+  @media (hover: hover) and (pointer: fine) {
+    .card-hover:hover {
+      transform: translate(-2px, -2px);
+      border-color: #111111;
+      box-shadow: 6px 6px 0 0 #f31e7a;
+    }
   }
 
   .display {
@@ -88,5 +98,17 @@
   .mask-fade-b {
     -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  }
+}
+
+/* Respect reduced-motion: kill movement, keep content visible (Emil / a11y). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

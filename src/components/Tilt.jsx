@@ -1,8 +1,9 @@
 import { useRef } from 'react'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion'
 
 // Reusable 3D tilt wrapper — children rotate toward the cursor.
 export default function Tilt({ children, max = 8, className = '', perspective = 900 }) {
+  const reduce = useReducedMotion()
   const ref = useRef(null)
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
@@ -20,6 +21,8 @@ export default function Tilt({ children, max = 8, className = '', perspective = 
     mx.set(0)
     my.set(0)
   }
+
+  if (reduce) return <div className={className}>{children}</div>
 
   return (
     <div style={{ perspective }} className={className}>
