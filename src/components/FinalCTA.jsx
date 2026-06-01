@@ -24,7 +24,7 @@ export default function FinalCTA() {
       >
         <p className="font-mono text-xs uppercase tracking-widest text-ink/70">{t('finalCta.eyebrow')}</p>
         <h2 className="display mx-auto mt-5 max-w-3xl text-[clamp(2.75rem,8vw,6rem)] text-ink">
-          {t('finalCta.title1')} <span className="text-white">{t('finalCta.title2')}</span>
+          {t('finalCta.title1')} <span data-road="loop" className="text-white">{t('finalCta.title2')}</span>
         </h2>
         <p className="mx-auto mt-6 max-w-xl text-lg font-medium text-ink/80 text-balance">{t('finalCta.subtitle')}</p>
         <button onClick={() => openQuote()} className="btn-dark mx-auto mt-10 text-base">

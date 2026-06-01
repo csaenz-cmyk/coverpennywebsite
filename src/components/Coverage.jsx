@@ -96,7 +96,7 @@ export default function Coverage() {
           className="mb-10 max-w-3xl"
         >
           <h2 className="display text-[clamp(2.5rem,6vw,4.5rem)] text-ink">
-            {t('coverage.title1')} <span className="text-penny-500">{t('coverage.title2')}</span>
+            {t('coverage.title1')} <span data-road="loop" className="text-penny-500">{t('coverage.title2')}</span>
           </h2>
           <p className="mt-4 max-w-lg text-lg text-ink-soft text-balance">{t('coverage.subtitle')}</p>
         </motion.div>

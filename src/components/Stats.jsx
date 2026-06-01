@@ -27,7 +27,7 @@ export default function Stats() {
           transition={{ duration: 0.7, ease }}
           className="max-w-4xl"
         >
-          <div className="display leading-[0.95] text-[clamp(3.5rem,13vw,9rem)] text-penny-400">{hero.value}</div>
+          <div data-road="loop" className="inline-block display leading-[0.95] text-[clamp(3.5rem,13vw,9rem)] text-penny-400">{hero.value}</div>
           <p className="mt-2 max-w-xl text-2xl font-medium text-white/90 text-balance sm:text-3xl">
             {hero.label}.
           </p>
