@@ -84,16 +84,16 @@ function Stop({ x, y, emoji, label, scale }) {
   )
 }
 
-// Pink road: white casing + pink surface + white dashes => visible on white,
-// pink and black backgrounds.
+// Pink road (thin): white casing + pink surface + white dashes => visible on
+// white, pink and black backgrounds.
 function RoadStrokes({ d, circle }) {
   const Tag = circle ? 'circle' : 'path'
   const c = circle ? { cx: circle.x, cy: circle.y, r: circle.r, fill: 'none' } : { d }
   return (
     <>
-      <Tag {...c} stroke="#ffffff" strokeOpacity="0.85" strokeWidth="8.5" strokeLinecap="round" />
-      <Tag {...c} stroke="#F31E7A" strokeWidth="5.5" strokeLinecap="round" />
-      <Tag {...c} stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" strokeDasharray="7 9" />
+      <Tag {...c} stroke="#ffffff" strokeOpacity="0.8" strokeWidth="5" strokeLinecap="round" />
+      <Tag {...c} stroke="#F31E7A" strokeWidth="3" strokeLinecap="round" />
+      <Tag {...c} stroke="#ffffff" strokeWidth="1.1" strokeLinecap="round" strokeDasharray="5 7" />
     </>
   )
 }
@@ -124,8 +124,8 @@ export default function ScrollPath() {
       const sy = window.scrollY
       const found = [...document.querySelectorAll('[data-road="loop"]')].map((el) => {
         const r = el.getBoundingClientRect()
-        let rad = Math.min(80, Math.max(34, Math.min(r.width, r.height) / 2 + 12))
-        rad = Math.min(rad, w * 0.2)
+        let rad = Math.min(64, Math.max(30, Math.min(r.width, r.height) / 2 + 10))
+        rad = Math.min(rad, w * 0.18)
         return { x: r.left + sx + r.width / 2, y: r.top + sy + r.height / 2, rad }
       })
       loopsRef.current = found
@@ -144,8 +144,8 @@ export default function ScrollPath() {
   }, [])
 
   const isMobile = size.w > 0 && size.w < 640
-  const carSize = isMobile ? 44 : 66
-  const stopScale = isMobile ? 0.8 : 1
+  const carSize = isMobile ? 38 : 54
+  const stopScale = isMobile ? 0.78 : 0.92
 
   const d = useMemo(() => buildSpine(size.w, size.h, loops), [size.w, size.h, loops])
 
