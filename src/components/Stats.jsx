@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { useT } from '../i18n/LanguageContext.jsx'
 import Coin from './Coin.jsx'
+import Coin3D from './Coin3D.jsx'
 
 const ease = [0.23, 1, 0.32, 1]
 
@@ -14,6 +15,9 @@ export default function Stats() {
   return (
     <section className="relative overflow-hidden bg-ink py-20 text-white sm:py-28">
       <Coin stroke="#F31E7A" className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 opacity-25" spin />
+      <div className="animate-float-slow pointer-events-none absolute right-6 top-14 hidden lg:block xl:right-16">
+        <Coin3D size={96} />
+      </div>
 
       <div className="section relative">
         <motion.div

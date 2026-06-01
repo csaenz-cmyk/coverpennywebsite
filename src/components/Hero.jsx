@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { useEffect } from 'react'
+import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion'
 import { useT } from '../i18n/LanguageContext.jsx'
 import { useQuote } from './quote/QuoteContext.jsx'
 import TiltQuoteCard from './TiltQuoteCard.jsx'
@@ -13,6 +14,23 @@ export default function Hero() {
   const reduce = useReducedMotion()
   const [tap, compare, covered] = t('hero.title')
   const badges = t('hero.badges')
+
+  // Coin drifts with the cursor (parallax).
+  const cx = useMotionValue(0)
+  const cy = useMotionValue(0)
+  const coinX = useSpring(cx, { stiffness: 80, damping: 18 })
+  const coinY = useSpring(cy, { stiffness: 80, damping: 18 })
+  useEffect(() => {
+    if (reduce) return
+    const onMove = (e) => {
+      const mx = e.clientX / window.innerWidth - 0.5
+      const my = e.clientY / window.innerHeight - 0.5
+      cx.set(mx * 36)
+      cy.set(my * 36)
+    }
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [reduce, cx, cy])
 
   const rise = (delay) => ({
     initial: reduce ? false : { opacity: 0, y: 22 },
@@ -89,8 +107,13 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.25, ease }}
           className="relative mx-auto w-full max-w-sm lg:mx-0 lg:ml-auto"
         >
-          {/* Real 3D object: a spinning penny */}
-          <Coin3D size={120} className="absolute -left-8 -top-12 z-10 hidden drop-shadow-xl sm:block" />
+          {/* Real 3D object: a spinning penny that drifts with the cursor */}
+          <motion.div
+            style={{ x: coinX, y: coinY }}
+            className="absolute -left-8 -top-12 z-10 hidden drop-shadow-xl sm:block"
+          >
+            <Coin3D size={120} />
+          </motion.div>
           <TiltQuoteCard />
         </motion.div>
       </div>
