@@ -29,7 +29,8 @@ export default {
       },
       fontFamily: {
         sans: ['"Hanken Grotesk"', 'system-ui', 'sans-serif'],
-        mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
+        display: ['"Bricolage Grotesque"', '"Hanken Grotesk"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
         '4xl': '2rem',
@@ -46,6 +47,14 @@ export default {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        marqueeReverse: {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        spinSlow: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-12px)' },
@@ -58,8 +67,10 @@ export default {
       animation: {
         marquee: 'marquee 38s linear infinite',
         'marquee-slow': 'marquee 60s linear infinite',
+        'marquee-reverse': 'marqueeReverse 50s linear infinite',
         float: 'float 6s ease-in-out infinite',
         'float-slow': 'floatSlow 8s ease-in-out infinite',
+        'spin-slow': 'spinSlow 28s linear infinite',
       },
     },
   },

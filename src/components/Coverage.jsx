@@ -1,101 +1,109 @@
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useT } from '../i18n/LanguageContext.jsx'
 import { useQuote } from './quote/QuoteContext.jsx'
-import Reveal from './Reveal.jsx'
-import Tilt from './Tilt.jsx'
 
 const ORDER = ['auto', 'home', 'business', 'moto']
+const ease = [0.23, 1, 0.32, 1]
 
-function CheckDot() {
-  return (
-    <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-penny-500 text-white">
-      <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="4">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    </span>
-  )
-}
-
-function Card({ typeKey, index }) {
+function Row({ typeKey, index }) {
   const t = useT()
   const { openQuote } = useQuote()
+  const reduce = useReducedMotion()
+  const [open, setOpen] = useState(false)
   const c = t(`coverage.types.${typeKey}`)
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
+      initial={reduce ? false : { opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.55, delay: index * 0.08 }}
+      transition={{ duration: 0.5, delay: index * 0.06, ease }}
+      onHoverStart={() => setOpen(true)}
+      onHoverEnd={() => setOpen(false)}
+      className="group border-t border-ink/15 last:border-b"
     >
-      <Tilt max={7} className="h-full">
-        <button
-          type="button"
-          onClick={() => openQuote(typeKey)}
-          className="card card-hover group flex h-full w-full flex-col p-6 text-left sm:p-8"
-        >
-          <div className="flex items-start justify-between gap-4" style={{ transform: 'translateZ(35px)' }}>
-            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-penny-100 text-3xl">
-              {c.emoji}
-            </div>
-            <div className="text-right">
-              <div className="font-mono text-[10px] uppercase tracking-widest text-ink-muted">{t('coverage.from')}</div>
-              <div className="font-sans text-2xl font-extrabold text-ink">
-                ${c.price}
-                <span className="text-sm font-medium text-ink-muted">{t('coverage.perMo')}</span>
-              </div>
-            </div>
-          </div>
+      <button
+        type="button"
+        onClick={() => openQuote(typeKey)}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        className="flex w-full items-center gap-4 py-6 text-left sm:gap-6 sm:py-7"
+      >
+        <span className="text-3xl transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-rotate-12 sm:text-4xl">
+          {c.emoji}
+        </span>
 
-          <h3 className="mt-5 text-2xl font-extrabold text-ink" style={{ transform: 'translateZ(25px)' }}>
+        <span className="flex min-w-0 flex-1 items-baseline gap-3 sm:gap-5">
+          <span className="display text-3xl text-ink transition-colors group-hover:text-penny-500 sm:text-5xl">
             {c.name}
-          </h3>
-          <p className="mt-1 text-ink-muted">{c.desc}</p>
-
-          <ul className="mt-5 space-y-2.5">
-            {c.bullets.map((b) => (
-              <li key={b} className="flex items-start gap-2.5 text-sm text-ink-soft">
-                <CheckDot />
-                {b}
-              </li>
-            ))}
-          </ul>
-
-          <span className="mt-6 inline-flex items-center gap-2 font-semibold text-penny-500">
-            {t('coverage.start')} {c.name.toLowerCase()} {t('coverage.quote')}
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4 transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
           </span>
-        </button>
-      </Tilt>
+          <span className="leader hidden text-ink sm:block" />
+          <span className="hidden shrink-0 text-right font-mono text-sm text-ink-muted sm:block">
+            {t('coverage.from')}
+          </span>
+        </span>
+
+        <span className="shrink-0 text-right">
+          <span className="display text-3xl text-ink sm:text-4xl">${c.price}</span>
+          <span className="font-mono text-xs text-ink-muted">{t('coverage.perMo')}</span>
+        </span>
+
+        <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-white transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-1 sm:flex">
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={reduce ? false : { height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease }}
+            className="overflow-hidden"
+          >
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pb-6 pl-12 text-ink-soft sm:pl-[3.75rem]">
+              <span className="text-base text-ink-muted">{c.desc}</span>
+              {c.bullets.map((b) => (
+                <span key={b} className="flex items-center gap-1.5 text-sm">
+                  <span className="h-1 w-1 rounded-full bg-penny-500" />
+                  {b}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
 
 export default function Coverage() {
   const t = useT()
+  const reduce = useReducedMotion()
 
   return (
-    <section id="coverage" className="bg-grid bg-white py-20 sm:py-28">
+    <section id="coverage" className="bg-white py-20 sm:py-28">
       <div className="section">
-        <Reveal>
-          <p className="eyebrow eyebrow-dot">{t('coverage.eyebrow')}</p>
-          <h2 className="display mt-4 text-4xl text-ink sm:text-6xl">
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6, ease }}
+          className="mb-10 max-w-3xl"
+        >
+          <h2 className="display text-[clamp(2.5rem,6vw,4.5rem)] text-ink">
             {t('coverage.title1')} <span className="text-penny-500">{t('coverage.title2')}</span>
           </h2>
-          <p className="mt-5 max-w-xl text-lg text-ink-soft text-balance">{t('coverage.subtitle')}</p>
-        </Reveal>
+          <p className="mt-4 max-w-lg text-lg text-ink-soft text-balance">{t('coverage.subtitle')}</p>
+        </motion.div>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2">
+        <div>
           {ORDER.map((key, i) => (
-            <Card key={key} typeKey={key} index={i} />
+            <Row key={key} typeKey={key} index={i} />
           ))}
         </div>
       </div>

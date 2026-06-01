@@ -50,7 +50,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <LanguageToggle />
-          <button onClick={() => openQuote()} className="btn-primary hidden px-5 py-2.5 text-sm sm:inline-flex">
+          <button onClick={() => openQuote()} className="btn-dark hidden px-5 py-2.5 text-sm sm:inline-flex">
             {t('nav.quote')}
           </button>
           <button
@@ -96,7 +96,7 @@ export default function Navbar() {
                   setMenuOpen(false)
                   openQuote()
                 }}
-                className="btn-primary mt-2 w-full"
+                className="btn-dark mt-2 w-full"
               >
                 {t('nav.quote')}
               </button>

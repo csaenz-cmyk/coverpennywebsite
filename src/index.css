@@ -63,7 +63,16 @@
   }
 
   .display {
-    @apply font-sans font-extrabold tracking-tight leading-[0.95];
+    @apply font-display font-extrabold tracking-[-0.02em] leading-[0.92];
+  }
+
+  /* Dotted leader between a label and a value (receipt / price-list motif). */
+  .leader {
+    @apply relative flex-1 overflow-hidden;
+  }
+  .leader::after {
+    content: '';
+    @apply absolute bottom-[0.35em] left-2 right-2 border-b-2 border-dotted border-current opacity-25;
   }
 
   /* Small uppercase chip */
