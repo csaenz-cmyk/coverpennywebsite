@@ -3,6 +3,7 @@ import { useT } from '../i18n/LanguageContext.jsx'
 import { useQuote } from './quote/QuoteContext.jsx'
 import TiltQuoteCard from './TiltQuoteCard.jsx'
 import Coin from './Coin.jsx'
+import Coin3D from './Coin3D.jsx'
 
 const ease = [0.23, 1, 0.32, 1]
 
@@ -43,11 +44,11 @@ export default function Hero() {
 
           <motion.h1
             {...rise(0.06)}
-            className="display text-3d mt-7 text-[clamp(3rem,8.5vw,5.75rem)] leading-[0.98]"
+            className="display mt-7 text-[clamp(3rem,8.5vw,5.75rem)] leading-[0.98] text-ink"
           >
             {tap}
             <br />
-            {compare}
+            <span className="text-penny-500">{compare}</span>
             <br />
             {covered}
           </motion.h1>
@@ -88,6 +89,8 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.25, ease }}
           className="relative mx-auto w-full max-w-sm lg:mx-0 lg:ml-auto"
         >
+          {/* Real 3D object: a spinning penny */}
+          <Coin3D size={120} className="absolute -left-8 -top-12 z-10 hidden drop-shadow-xl sm:block" />
           <TiltQuoteCard />
         </motion.div>
       </div>

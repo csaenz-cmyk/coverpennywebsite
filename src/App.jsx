@@ -1,5 +1,5 @@
 import { QuoteProvider } from './components/quote/QuoteContext.jsx'
-import ScrollSpine from './components/ScrollSpine.jsx'
+import ScrollPath from './components/ScrollPath.jsx'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import SavingsTicker from './components/SavingsTicker.jsx'
@@ -14,19 +14,21 @@ import Footer from './components/Footer.jsx'
 export default function App() {
   return (
     <QuoteProvider>
-      <ScrollSpine />
       <Navbar />
-      <main>
-        <Hero />
-        <SavingsTicker />
-        <Coverage />
-        <HowItWorks />
-        <Stats />
-        <Carriers />
-        <Testimonials />
-        <FinalCTA />
-      </main>
-      <Footer />
+      <div className="relative">
+        <ScrollPath />
+        <main>
+          <Hero />
+          <SavingsTicker />
+          <Coverage />
+          <HowItWorks />
+          <Stats />
+          <Carriers />
+          <Testimonials />
+          <FinalCTA />
+        </main>
+        <Footer />
+      </div>
     </QuoteProvider>
   )
 }

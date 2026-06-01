@@ -55,6 +55,10 @@ export default {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        coinflip: {
+          '0%': { transform: 'rotateX(-14deg) rotateY(0deg)' },
+          '100%': { transform: 'rotateX(-14deg) rotateY(360deg)' },
+        },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-12px)' },
@@ -71,6 +75,7 @@ export default {
         float: 'float 6s ease-in-out infinite',
         'float-slow': 'floatSlow 8s ease-in-out infinite',
         'spin-slow': 'spinSlow 28s linear infinite',
+        'coin-flip': 'coinflip 7s linear infinite',
       },
     },
   },
