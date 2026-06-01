@@ -15,7 +15,7 @@ export default function App() {
   return (
     <QuoteProvider>
       <Navbar />
-      <div className="relative">
+      <div className="relative overflow-x-clip">
         <ScrollPath />
         <main>
           <Hero />

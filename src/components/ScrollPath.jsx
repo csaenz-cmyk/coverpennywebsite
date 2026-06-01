@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useMotionValue, useScroll, useSpring } from 'framer-motion'
+import Car3D from './Car3D.jsx'
 
-// Small seeded RNG so the road shape is stable between renders.
 function makeRng(seed) {
   let s = seed
   return () => {
@@ -10,81 +10,39 @@ function makeRng(seed) {
   }
 }
 
-// Build a winding road that weaves down the page and loops around the
-// elements tagged [data-road="loop"] (key words like savings / today).
-function buildPath(w, h, loops) {
+// Monotonic weaving spine (so the car stays in sync with scroll). It also
+// skirts the edge of each loop word so the road appears to curve around it.
+function buildSpine(w, h, anchors) {
   if (!w || !h) return ''
   const rng = makeRng(98765)
   const minX = w * 0.12
   const maxX = w * 0.88
+  const gap = w < 640 ? 220 : 300
 
-  // algorithmic waypoints, varied (not a repeating zig-zag)
-  const pts = []
+  const pts = [{ x: w * 0.5, y: 0 }]
   let y = 0
-  pts.push({ x: w * 0.5, y: 0 })
   while (y < h - 120) {
-    y += 280 + rng() * 260
+    y += gap + rng() * (gap * 0.8)
     pts.push({ x: minX + rng() * (maxX - minX), y: Math.min(h, y) })
   }
-  // merge loop anchors by y
-  for (const l of loops) pts.push({ ...l, loop: true })
+  for (const a of anchors) pts.push({ x: a.x + a.rad * 0.95, y: a.y })
   pts.sort((a, b) => a.y - b.y)
 
   let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`
   let prev = pts[0]
   for (let i = 1; i < pts.length; i++) {
     const p = pts[i]
-    if (p.loop) {
-      const top = { x: p.x, y: p.y - p.rad }
-      const midY = (prev.y + top.y) / 2
-      d += ` C ${prev.x.toFixed(1)} ${midY.toFixed(1)}, ${top.x.toFixed(1)} ${midY.toFixed(1)}, ${top.x.toFixed(1)} ${top.y.toFixed(1)}`
-      // full circle around the word (two arcs)
-      d += ` A ${p.rad} ${p.rad} 0 1 1 ${p.x.toFixed(1)} ${(p.y + p.rad).toFixed(1)}`
-      d += ` A ${p.rad} ${p.rad} 0 1 1 ${top.x.toFixed(1)} ${top.y.toFixed(1)}`
-      prev = top
-    } else {
-      const midY = (prev.y + p.y) / 2
-      d += ` C ${prev.x.toFixed(1)} ${midY.toFixed(1)}, ${p.x.toFixed(1)} ${midY.toFixed(1)}, ${p.x.toFixed(1)} ${p.y.toFixed(1)}`
-      prev = p
-    }
+    const midY = (prev.y + p.y) / 2
+    d += ` C ${prev.x.toFixed(1)} ${midY.toFixed(1)}, ${p.x.toFixed(1)} ${midY.toFixed(1)}, ${p.x.toFixed(1)} ${p.y.toFixed(1)}`
+    prev = p
   }
   return d
 }
 
-// A glossy, shaded 3D-ish car with tail lights. Faces +x (travel direction).
-function Car() {
+function Stop({ x, y, emoji, label, scale }) {
   return (
-    <g>
-      {/* drop shadow */}
-      <ellipse cx="0" cy="3" rx="18" ry="10" fill="#111" opacity="0.16" />
-      {/* wheels */}
-      <rect x="-10" y="-11" width="7" height="3.5" rx="1.75" fill="#0b0b0b" />
-      <rect x="4" y="-11" width="7" height="3.5" rx="1.75" fill="#0b0b0b" />
-      <rect x="-10" y="7.5" width="7" height="3.5" rx="1.75" fill="#0b0b0b" />
-      <rect x="4" y="7.5" width="7" height="3.5" rx="1.75" fill="#0b0b0b" />
-      {/* tail lights (rear, -x) with glow */}
-      <rect x="-17" y="-6" width="4" height="3.5" rx="1.5" fill="#ff2d2d" />
-      <rect x="-17" y="2.5" width="4" height="3.5" rx="1.5" fill="#ff2d2d" />
-      <rect x="-18.5" y="-6.5" width="3" height="13" rx="1.5" fill="#ff2d2d" opacity="0.35" />
-      {/* body */}
-      <rect x="-15" y="-8" width="30" height="16" rx="6" fill="url(#carBody)" stroke="#9a0a48" strokeWidth="1" />
-      {/* gloss highlight */}
-      <rect x="-12" y="-6.5" width="24" height="4" rx="2" fill="#fff" opacity="0.28" />
-      {/* cabin / glass */}
-      <rect x="-6" y="-5.5" width="12" height="11" rx="3" fill="url(#carGlass)" />
-      <rect x="-4.5" y="-4.5" width="3.5" height="9" rx="1.5" fill="#fff" opacity="0.18" />
-      {/* headlights (front, +x) */}
-      <rect x="13.5" y="-6" width="2.5" height="3" rx="1" fill="#fff7d6" />
-      <rect x="13.5" y="3" width="2.5" height="3" rx="1" fill="#fff7d6" />
-    </g>
-  )
-}
-
-// A roadside pit stop (gas / work / coffee).
-function Stop({ x, y, emoji, label }) {
-  return (
-    <g transform={`translate(${x} ${y})`}>
-      <line x1="0" y1="0" x2="0" y2="-26" stroke="#111" strokeOpacity="0.25" strokeWidth="1.5" strokeDasharray="2 3" />
+    <g transform={`translate(${x} ${y}) scale(${scale})`}>
+      <line x1="0" y1="0" x2="0" y2="-24" stroke="#111" strokeOpacity="0.3" strokeWidth="1.5" strokeDasharray="2 3" />
       <g transform="translate(0 -40)">
         <rect x="-15" y="-15" width="30" height="30" rx="9" fill="#fff" stroke="#111" strokeOpacity="0.12" strokeWidth="1" style={{ filter: 'drop-shadow(0 4px 10px rgba(17,17,17,0.16))' }} />
         <text x="0" y="1" textAnchor="middle" dominantBaseline="middle" fontSize="16">{emoji}</text>
@@ -98,16 +56,30 @@ function Stop({ x, y, emoji, label }) {
   )
 }
 
+// Road styling reused for the spine and the roundabouts.
+function RoadStrokes({ d, circle }) {
+  const Tag = circle ? 'circle' : 'path'
+  const common = circle ? { cx: circle.x, cy: circle.y, r: circle.r, fill: 'none' } : { d }
+  return (
+    <>
+      <Tag {...common} stroke="#ffffff" strokeOpacity="0.55" strokeWidth="9" strokeLinecap="round" />
+      <Tag {...common} stroke="#1b1b1b" strokeOpacity="0.82" strokeWidth="6" strokeLinecap="round" />
+      <Tag {...common} stroke="#ffd23f" strokeWidth="1.6" strokeLinecap="round" strokeDasharray="7 9" />
+    </>
+  )
+}
+
 const STOP_DEFS = [
-  { t: 0.26, emoji: '⛽', label: 'GAS' },
-  { t: 0.54, emoji: '🚧', label: 'WORK' },
-  { t: 0.78, emoji: '☕', label: 'STOP' },
+  { t: 0.24, emoji: '⛽', label: 'GAS' },
+  { t: 0.5, emoji: '🚧', label: 'OBRA' },
+  { t: 0.76, emoji: '🛞', label: 'LLANTAS' },
 ]
 
 export default function ScrollPath() {
   const [size, setSize] = useState({ w: 0, h: 0 })
   const [loops, setLoops] = useState([])
   const pathRef = useRef(null)
+  const loopsRef = useRef([])
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const angle = useMotionValue(0)
@@ -115,17 +87,19 @@ export default function ScrollPath() {
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, mass: 0.4 })
 
-  // Measure page + the key words to loop around.
   useEffect(() => {
     const measure = () => {
-      setSize({ w: window.innerWidth, h: document.documentElement.scrollHeight })
+      const w = window.innerWidth
+      setSize({ w, h: document.documentElement.scrollHeight })
       const sx = window.scrollX
       const sy = window.scrollY
       const found = [...document.querySelectorAll('[data-road="loop"]')].map((el) => {
         const r = el.getBoundingClientRect()
-        const rad = Math.min(92, Math.max(42, Math.min(r.width, r.height) / 2 + 16))
+        let rad = Math.min(86, Math.max(36, Math.min(r.width, r.height) / 2 + 12))
+        rad = Math.min(rad, w * 0.22)
         return { x: r.left + sx + r.width / 2, y: r.top + sy + r.height / 2, rad }
       })
+      loopsRef.current = found
       setLoops(found)
     }
     measure()
@@ -140,9 +114,12 @@ export default function ScrollPath() {
     }
   }, [])
 
-  const d = useMemo(() => buildPath(size.w, size.h, loops), [size.w, size.h, loops])
+  const isMobile = size.w > 0 && size.w < 640
+  const carSize = isMobile ? 44 : 66
+  const stopScale = isMobile ? 0.8 : 1
 
-  // Precompute stop positions from the path geometry.
+  const d = useMemo(() => buildSpine(size.w, size.h, loops), [size.w, size.h, loops])
+
   const stops = useMemo(() => {
     if (!d) return []
     try {
@@ -159,7 +136,8 @@ export default function ScrollPath() {
     }
   }, [d])
 
-  // Drive the car along the road.
+  // Drive the car: follow the spine (tracks scroll) + a full 360° spin as it
+  // passes each loop word.
   useEffect(() => {
     const place = (p) => {
       const path = pathRef.current
@@ -169,9 +147,15 @@ export default function ScrollPath() {
       const at = Math.min(1, Math.max(0, p)) * len
       const pt = path.getPointAtLength(at)
       const ahead = path.getPointAtLength(Math.min(len, at + 2))
+      let ang = (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI
+      for (const a of loopsRef.current) {
+        const band = (a.rad || 60) * 1.8
+        const t = (pt.y - (a.y - band)) / (2 * band)
+        ang += 360 * Math.min(1, Math.max(0, t))
+      }
       x.set(pt.x)
       y.set(pt.y)
-      angle.set((Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI)
+      angle.set(ang)
     }
     place(progress.get())
     const unsub = progress.on('change', place)
@@ -181,53 +165,33 @@ export default function ScrollPath() {
   if (!d) return null
 
   return (
-    <svg
-      width={size.w}
-      height={size.h}
-      viewBox={`0 0 ${size.w} ${size.h}`}
-      className="pointer-events-none absolute left-0 top-0 z-20 hidden md:block"
-      style={{ height: size.h }}
-      fill="none"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="carBody" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ff7db0" />
-          <stop offset="0.55" stopColor="#f31e7a" />
-          <stop offset="1" stopColor="#c50e5e" />
-        </linearGradient>
-        <linearGradient id="carGlass" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#3a3a3a" />
-          <stop offset="1" stopColor="#0d0d0d" />
-        </linearGradient>
-      </defs>
+    <>
+      <svg
+        width={size.w}
+        height={size.h}
+        viewBox={`0 0 ${size.w} ${size.h}`}
+        className="pointer-events-none absolute left-0 top-0 z-20"
+        style={{ height: size.h }}
+        fill="none"
+        aria-hidden="true"
+      >
+        {/* roundabouts around the key words */}
+        {loops.map((a, i) => (
+          <RoadStrokes key={`loop${i}`} circle={{ x: a.x, y: a.y, r: a.rad }} />
+        ))}
+        {/* the road (spine) */}
+        <path ref={pathRef} d={d} stroke="transparent" strokeWidth="1" />
+        <RoadStrokes d={d} />
 
-      {/* road bed */}
-      <path d={d} stroke="#F31E7A" strokeOpacity="0.1" strokeWidth="7" strokeLinecap="round" />
-      {/* tire tracks (dashed tread) */}
-      <path d={d} stroke="#111" strokeOpacity="0.28" strokeWidth="2" strokeDasharray="5 9" strokeLinecap="round" />
-      {/* bright painted trail behind the car */}
-      <motion.path
-        ref={pathRef}
-        d={d}
-        stroke="#F31E7A"
-        strokeWidth="3"
-        strokeLinecap="round"
-        style={{ pathLength: progress, filter: 'drop-shadow(0 2px 6px rgba(243,30,122,0.35))' }}
-      />
+        {stops.map((s, i) => (
+          <Stop key={i} {...s} scale={stopScale} />
+        ))}
+      </svg>
 
-      {/* roadside stops */}
-      {stops.map((s, i) => (
-        <Stop key={i} {...s} />
-      ))}
-
-      {/* the 3D car on a puck */}
-      <motion.g style={{ x, y }}>
-        <circle r="22" fill="#fff" stroke="#111" strokeOpacity="0.8" strokeWidth="1.5" style={{ filter: 'drop-shadow(0 3px 9px rgba(17,17,17,0.22))' }} />
-        <motion.g style={{ rotate: angle }}>
-          <Car />
-        </motion.g>
-      </motion.g>
-    </svg>
+      {/* the volumetric 3D car, positioned + yawed (and spinning at words) */}
+      <motion.div style={{ x, y }} className="pointer-events-none absolute left-0 top-0 z-30">
+        <Car3D angle={angle} size={carSize} />
+      </motion.div>
+    </>
   )
 }
